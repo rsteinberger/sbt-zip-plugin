@@ -47,16 +47,16 @@ libraryDependencies += "org.scala-sbt" %% "scripted-plugin" % sbtVersion.value
 
 ```
 lazy val root = (project in file("."))
- .settings(
-   name := "sbt-zip-plugin",
-   organization := "io.demo.sbt",
-   version := "0.1-SNAPSHOT",
-   sbtPlugin := true,
-   // scriptedLaunchOpts += ("-Dplugin.version=" + version.value),
-   // scriptedLaunchOpts ++= sys.process.javaVmArguments.filter(
-     // a => Seq("-Xmx", "-Xms", "-XX", "-      Dsbt.log.noformat").exists(a.startsWith)
-   // ),
-   // scriptedBufferLog := false
+  .enablePlugins(SbtPlugin)
+  .settings(
+    name := "sbt-zip-plugin",
+    organization := "io.demo.sbt",
+    version := "0.1-SNAPSHOT",
+    sbtPlugin := true,
+      scriptedLaunchOpts := { scriptedLaunchOpts.value ++
+        Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
+      },
+   scriptedBufferLog := false
  )
 
 ```
@@ -153,7 +153,6 @@ object ZipPlugin extends AutoPlugin {
   import autoImport._
 
   override lazy val projectSettings: Seq[Setting[_]] = Seq(
-    targetZipDir := target.value / "zip",
     zip := zipTask.value
   )
 
@@ -161,7 +160,9 @@ object ZipPlugin extends AutoPlugin {
     val log = sLog.value
     lazy val zip = new File(targetZipDir.value, sourceZipDir.value.getName + ".zip")
 
+    println("ZIPPING...")
     log.info("Zipping file...")
+
     IO.zip(Path.allSubpaths(sourceZipDir.value), zip)
     zip
   }
@@ -224,11 +225,13 @@ import sbtzipplugin.ZipPlugin
 
 lazy val root = (project in file("."))
     .enablePlugins(ZipPlugin)
-  	.settings(
-    scalaVersion := "2.12.4",
-    version := "0.1",
-    sourceZipDir := crossTarget.value
-  )
+    .settings(
+      scalaVersion := "2.12.11",
+      version := "0.1",
+      sourceZipDir := file("/Home/git/sbt-zip-plugin/dataIn"),
+      targetZipDir := file("/Home/git/sbt-zip-plugin/dataOut/zip")
+    // sourceZipDir := crossTarget.value
+    )
   ```
 
 sbt:sbt-zip-plugin> show crossTarget
@@ -239,7 +242,21 @@ sbt:sbt-zip-plugin> show crossTarget
 
 We are adding our newly created ZipPlugin dependency to the simple project. 
 
-And the little trick here is to test our plugin against cross-version if required is to get plugin version number from system property.
+OR 
+
+```
+libraryDependencies += "io.demo.sbt" %% "sbt-zip-plugin" % "0.1-SNAPSHOT"
+```
+
+OR
+
+```
+libraryDependencies += ""io.demo.sbt" % "sbt-zip-plugin" % scala_2.12"
+```
+
+OR
+
+Test the plugin against cross-version if required, get plugin version number from system property.
 
 ```
 sys.props.get("plugin.version") match {
@@ -259,7 +276,7 @@ Add a script to test the ZipPlugin. Name it `test` as scripted plugin looks for 
 
 ```
 > zip
-$ exists target/zip/scala-2.12.zip
+$ exists /Home/git/sbt-zip-plugin/dataOut/zip/dataIn.zip
 ```
 
 ## Run the test
@@ -273,9 +290,6 @@ sbt:sbt-zip-plugin> compile
 sbt:sbt-zip-plugin> publishLocal
 sbt:sbt-zip-plugin> scripted
 ```
-
-C:\Users\RSTEIN~1\AppData\Local\Temp\sbt_98ec9717\target\zip\dataOut.zip
-
 
 
 

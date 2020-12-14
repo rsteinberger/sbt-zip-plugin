@@ -8,5 +8,6 @@ lazy val root = (project in file("."))
 	    scriptedLaunchOpts := { scriptedLaunchOpts.value ++
 	      Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
 	    },
-   scriptedBufferLog := false
+	   scriptedBufferLog := false,
+	   libraryDependencies += "io.demo.sbt" %% "sbt-hello" % "0.1-SNAPSHOT"
  )

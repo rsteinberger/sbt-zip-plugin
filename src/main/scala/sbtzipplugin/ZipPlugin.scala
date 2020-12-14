@@ -20,12 +20,12 @@ object ZipPlugin extends AutoPlugin {
 
   private def zipTask =  Def.task {
     val log = sLog.value
-    lazy val zip = new File(targetZipDir.value, sourceZipDir.value.getName + ".zip")
+    lazy val out = new File(targetZipDir.value, sourceZipDir.value.getName + ".zip")
 
     println("ZIPPING...")
     log.info("Zipping file...")
 
-    IO.zip(Path.allSubpaths(sourceZipDir.value), zip)
-    zip
+    IO.zip(Path.allSubpaths(sourceZipDir.value), out)
+    out
   }
 }
