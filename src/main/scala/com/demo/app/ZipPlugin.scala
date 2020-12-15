@@ -1,4 +1,4 @@
-package sbtzipplugin
+package com.demo.app
 
 import java.io.File
 
@@ -22,8 +22,8 @@ object ZipPlugin extends AutoPlugin {
     val log = sLog.value
     lazy val out = new File(targetZipDir.value, sourceZipDir.value.getName + ".zip")
 
-    println("ZIPPING...")
-    log.info("Zipping file...")
+    println("Zipping file...")
+    // log.info("Zipping file...")
 
     IO.zip(Path.allSubpaths(sourceZipDir.value), out)
     out

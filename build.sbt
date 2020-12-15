@@ -2,12 +2,8 @@ lazy val root = (project in file("."))
 	.enablePlugins(SbtPlugin)
 	.settings(
 		name := "sbt-zip-plugin",
-		organization := "io.demo.sbt",
+		organization := "com.demo.app",
 		version := "0.1-SNAPSHOT",
 		sbtPlugin := true,
-	    scriptedLaunchOpts := { scriptedLaunchOpts.value ++
-	      Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
-	    },
-	   scriptedBufferLog := false,
-	   libraryDependencies += "io.demo.sbt" %% "sbt-hello" % "0.1-SNAPSHOT"
+		libraryDependencies += "com.demo.app" %% "sbt-zip-app" % "0.1-SNAPSHOT"
  )

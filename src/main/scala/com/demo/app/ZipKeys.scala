@@ -1,4 +1,4 @@
-package sbtzipplugin
+package com.demo.app
 
 import sbt._
 
